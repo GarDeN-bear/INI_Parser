@@ -8,13 +8,13 @@
 class ini_parser {
 public:
 	ini_parser(std::string);
+	// удаляем конструкторы копирования и присваивания
+	ini_parser(ini_parser& other) = delete;
+	ini_parser(ini_parser&& other) = delete;
+	ini_parser& operator=(ini_parser& other) = delete;
+	ini_parser& operator=(ini_parser&& other) = delete;
 
-	ini_parser(ini_parser&) = delete;
-	ini_parser(ini_parser&&) = delete;
-	ini_parser& operator=(ini_parser&) = delete;
-	ini_parser& operator=(ini_parser&&) = delete;
-
-
+	// Функция получения значения определённого типа по входной строке вида Sector1.var1
 	template<class T>
 	T get_value(std::string);
 
@@ -24,7 +24,8 @@ public:
 
 private:
 	std::ifstream fin;
-	std::map<std::string, std::map<std::string, std::string>> sections;
+	std::map<std::string, std::map<std::string, std::string>> sections; // словарь, в который записываются секции и их параметры из INI файла
+	// Функция обработки возможных ошибок парсера
 	void ini_parser_error(std::string&, std::string&);
 };
 
