@@ -88,6 +88,14 @@ void ini_parser::ini_parser_error(std::string& input_section_name, std::string& 
 	}
 }
 
+void ini_parser::ini_parser_type_error(std::string& input_section_name, std::map<std::string, std::map<std::string, std::string>>& sections) {
+	std::string type_error = "Invalid value type. Look at [" + input_section_name + "] content.\n[" + input_section_name + "]\n";
+	for (const auto& el2 : sections[input_section_name]) {
+		type_error += el2.first + '=' + el2.second + '\n';
+	}
+	throw std::runtime_error(type_error);
+}
+
 template<>
 int ini_parser::get_value(std::string input_section_value) {
 	// обработка входящей строки
@@ -102,11 +110,7 @@ int ini_parser::get_value(std::string input_section_value) {
 		result_value = stoi(sections[input_section_name][input_value_name]);
 	}
 	catch (...) {
-		std::string type_error = "Invalid value type. Look at [" + input_section_name + "] content.\n[" + input_section_name + "]\n";
-		for (const auto& el2 : sections[input_section_name]) {
-			type_error += el2.first + '=' + el2.second + '\n';
-		}
-		throw std::runtime_error(type_error);
+		ini_parser_type_error(input_section_name, sections);
 	}
 	return result_value;
 }
@@ -121,5 +125,43 @@ std::string ini_parser::get_value(std::string input_section_value) {
 	std::string result_value; // результирующее значение
 	ini_parser_error(input_section_name, input_value_name);
 	result_value = sections[input_section_name][input_value_name];
+	return result_value;
+}
+
+template<>
+double ini_parser::get_value(std::string input_section_value) {
+	// обработка входящей строки
+	std::string input_section_name = input_section_value.substr(0, // название введенной секции
+		input_section_value.find('.'));
+	std::string input_value_name = input_section_value.substr(input_section_value.find('.') + 1, // название введенной переменной
+		input_section_value.size() - input_section_name.size() - 1);
+	double result_value; // результирующее значение
+	ini_parser_error(input_section_name, input_value_name);
+	// обработка ошибки невозможности преобразования искомого значения параметра к типу double
+	try {
+		result_value = stod(sections[input_section_name][input_value_name]);
+	}
+	catch (...) {
+		ini_parser_type_error(input_section_name, sections);
+	}
+	return result_value;
+}
+
+template<>
+float ini_parser::get_value(std::string input_section_value) {
+	// обработка входящей строки
+	std::string input_section_name = input_section_value.substr(0, // название введенной секции
+		input_section_value.find('.'));
+	std::string input_value_name = input_section_value.substr(input_section_value.find('.') + 1, // название введенной переменной
+		input_section_value.size() - input_section_name.size() - 1);
+	float result_value; // результирующее значение
+	ini_parser_error(input_section_name, input_value_name);
+	// обработка ошибки невозможности преобразования искомого значения параметра к типу float
+	try {
+		result_value = stof(sections[input_section_name][input_value_name]);
+	}
+	catch (...) {
+		ini_parser_type_error(input_section_name, sections);
+	}
 	return result_value;
 }

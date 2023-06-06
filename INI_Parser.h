@@ -27,6 +27,7 @@ private:
 	std::map<std::string, std::map<std::string, std::string>> sections; // словарь, в который записываются секции и их параметры из INI файла
 	// Функция обработки возможных ошибок парсера
 	void ini_parser_error(std::string&, std::string&);
+	void ini_parser_type_error(std::string&, std::map<std::string, std::map<std::string, std::string>>&);
 };
 
 

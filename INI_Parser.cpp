@@ -5,10 +5,12 @@
 int main() {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
-	ini_parser parser("INI.txt");
+	ini_parser parser("INI.ini");
 	try {
-		auto value = parser.get_value<int>("Section1.var1");
-		std::cout << value;
+		std::cout << parser.get_value<int>("Section1.var1") << std::endl;
+		std::cout << parser.get_value<std::string>("Section1.var1") << std::endl;
+		std::cout << parser.get_value<double>("Section1.var1") << std::endl;
+		std::cout << parser.get_value<float>("Section1.var1") << std::endl;
 	}
 	catch (std::exception& ex) {
 		std::cout << ex.what();
